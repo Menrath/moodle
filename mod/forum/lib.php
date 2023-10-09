@@ -5449,7 +5449,7 @@ function forum_extend_settings_navigation(settings_navigation $settingsnav, navi
                     'forumid' => $forumobject->id,
                 ];
                 $reportlink = new moodle_url("/mod/forum/report/{$reportname}/index.php", $reportlinkparams);
-                $forumnode->add(get_string('reports'), $reportlink, navigation_node::TYPE_CONTAINER);
+                $forumnode->add(get_string('nodetitle', "forumreport_{$reportname}"), $reportlink, navigation_node::TYPE_CONTAINER);
             }
         }
     }
