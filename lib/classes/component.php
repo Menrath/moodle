@@ -69,7 +69,7 @@ class component {
         'yui' => true,
     ];
     /** @var array list plugin types that support subplugins, do not add more here unless absolutely necessary */
-    protected static $supportsubplugins = ['mod', 'editor', 'tool', 'local'];
+    protected static $supportsubplugins = ['mod', 'editor', 'tool', 'local', 'communication'];
 
     /** @var object JSON source of the component data */
     protected static $componentsource = null;
