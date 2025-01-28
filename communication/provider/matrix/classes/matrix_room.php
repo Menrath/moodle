@@ -26,6 +26,10 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class matrix_room {
+    /**
+     * Constant defining the database table used for saving matrix rooms.
+     * @var string
+     */
     private const TABLE = 'matrix_room';
 
     /** @var \stdClass|null $record The matrix room record from db */
@@ -54,6 +58,11 @@ class matrix_room {
      * @param stdClass $record
      */
     private function __construct(
+        /**
+         * The Moodle Database record of a Matrix room.
+         *
+         * @var stdClass
+         */
         private stdClass $record,
     ) {
     }

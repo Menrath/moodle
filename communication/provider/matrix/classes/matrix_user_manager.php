@@ -27,8 +27,10 @@ class matrix_user_manager {
 
     /**
      * Prefix for Matrix usernames when they are detected as numeric.
+     *
+     * @var string
      */
-    const MATRIX_USER_PREFIX = 'user';
+    public const MATRIX_USER_PREFIX = 'user';
 
     /**
      * Gets matrix user id from moodle.
@@ -122,7 +124,7 @@ class matrix_user_manager {
      *
      * @return string
      */
-    public static function create_matrix_user_profile_fields(): string {
+    public static function create_matrix_user_profile_fields(): ?string {
         global $CFG, $DB;
 
         require_once($CFG->dirroot . '/user/profile/definelib.php');
@@ -176,7 +178,7 @@ class matrix_user_manager {
     }
 
     /**
-     * Get the profile field name, creating the profiel field if it does not exist.
+     * Get the profile field name, creating the profile field if it does not exist.
      *
      * @return string
      */

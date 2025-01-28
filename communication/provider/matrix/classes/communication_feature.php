@@ -88,6 +88,9 @@ class communication_feature implements
      * @param processor $processor The communication processor object
      */
     private function __construct(
+        /**
+         * @var processor $processor The communication processor object
+         */
         private \core_communication\processor $processor,
     ) {
         $this->homeserverurl = get_config('communication_matrix', 'matrixhomeserverurl');
@@ -190,6 +193,12 @@ class communication_feature implements
         $this->processor->mark_users_as_synced($addedmembers);
     }
 
+    /**
+     *  Updates the room memberships for an array of Moodle user IDs.
+     *
+     * @param array $userids The Moodle user IDs.
+     * @return void
+     */
     public function update_room_membership(array $userids): void {
 
         // Filter out any users that are not room members yet.
@@ -413,7 +422,11 @@ class communication_feature implements
         $this->update_room_avatar();
         return true;
     }
-
+    /**
+     * Update chat room.
+     *
+     * @return bool
+     */
     public function update_chat_room(): bool {
         if (!$this->remote_room_exists()) {
             // No room exists. Create it instead.
@@ -455,6 +468,11 @@ class communication_feature implements
         return true;
     }
 
+    /**
+     * Delete Chat Room.
+     *
+     * @return bool
+     */
     public function delete_chat_room(): bool {
         $this->get_room_configuration()->delete_room_record();
         $this->room = null;
@@ -523,6 +541,11 @@ class communication_feature implements
         }
     }
 
+    /**
+     * Get chat Room URL.
+     *
+     * @return string|null
+     */
     public function get_chat_room_url(): ?string {
         if (!$this->get_room_id()) {
             // We don't have a room id for this record.
@@ -536,6 +559,11 @@ class communication_feature implements
         );
     }
 
+    /**
+     * Save Form Data.
+     * @param \stdClass $instance
+     * @return void
+     */
     public function save_form_data(\stdClass $instance): void {
         $matrixroomtopic = $instance->matrixroomtopic ?? null;
         $room = $this->get_room_configuration();
@@ -552,6 +580,12 @@ class communication_feature implements
         }
     }
 
+    /**
+     * Set form data.
+     *
+     * @param \stdClass $instance
+     * @return void
+     */
     public function set_form_data(\stdClass $instance): void {
         if (!empty($instance->id) && !empty($this->processor->get_id())) {
             if ($this->room_exists()) {
@@ -560,6 +594,12 @@ class communication_feature implements
         }
     }
 
+    /**
+     * Set form definition.
+     *
+     * @param \MoodleQuickForm $mform
+     * @return void
+     */
     public static function set_form_definition(\MoodleQuickForm $mform): void {
         // Room description for the communication provider.
         $mform->insertElementBefore($mform->createElement(
@@ -765,7 +805,7 @@ class communication_feature implements
         return $powerlevel;
     }
 
-    /*
+    /**
      * Check if matrix settings are configured
      *
      * @return boolean
@@ -786,6 +826,11 @@ class communication_feature implements
         return false;
     }
 
+    /**
+     * Synchronize room members: Currenly only syncs power levels.
+     *
+     * @return void
+     */
     public function synchronise_room_members(): void {
         $this->set_matrix_power_levels();
     }
