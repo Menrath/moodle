@@ -15,16 +15,16 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for communication_matrix.
+ * TODO Describe Sync prodiver.
  *
- * @package    communication_matrix
- * @copyright  2023 Safat Shahin <safat.shahin@moodle.com>
+ * @package    matrixusersync_manual
+ * @copyright  2025 André Menrath <andre.menrath@posteo.de>, University of Graz
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'communication_matrix';
-$plugin->version = 2025012703;
+$plugin->component = 'matrixusersync_manual';
+$plugin->version = 2025012701;
 $plugin->requires = 2024041600;
 $plugin->maturity = MATURITY_ALPHA;

@@ -15,16 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for communication_matrix.
+ * TODO describe file matrixusersync_base
  *
- * @package    communication_matrix
- * @copyright  2023 Safat Shahin <safat.shahin@moodle.com>
+ * @package    matrixusersync_ldap
+ * @copyright  2025 André Menrath <andre.menrath@posteo.de>, University of Graz
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'communication_matrix';
-$plugin->version = 2025012703;
-$plugin->requires = 2024041600;
-$plugin->maturity = MATURITY_ALPHA;
+$string['matrixusersyncmanual'] = 'Configuration options for manually setting the Matrix User IDs';
+$string['pluginname'] = 'Manual setting of Matrix User ID';
+$string['privacy:metadata'] = 'The Matrix User ID Sync by LDAP plugin does not store any personal data.';
+$string['settings'] = 'Example heading';
+$string['settingsheading'] = 'Example settings name';

@@ -1,0 +1,5 @@
+{
+  "plugintypes": {
+    "matrixusersync": "communication\/provider\/matrix\/usersync"
+  }
+}

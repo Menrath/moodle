@@ -15,16 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for communication_matrix.
+ * TODO describe file matrixusersync_base
  *
- * @package    communication_matrix
- * @copyright  2023 Safat Shahin <safat.shahin@moodle.com>
+ * @package    matrixusersync_username
+ * @copyright  2025 André Menrath <andre.menrath@posteo.de>, University of Graz
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'communication_matrix';
-$plugin->version = 2025012703;
-$plugin->requires = 2024041600;
-$plugin->maturity = MATURITY_ALPHA;
+$string['pluginname'] = 'Synchronize Matrix User ID by Moodle Username';
+$string['privacy:metadata'] = 'The Matrix User ID Sync by Moodle username plugin does not store any personal data.';

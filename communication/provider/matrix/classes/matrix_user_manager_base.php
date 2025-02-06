@@ -23,34 +23,16 @@ namespace communication_matrix;
  * @copyright  2023 Stevani Andolo <stevani.andolo@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class matrix_user_manager {
-
-    /**
-     * Prefix for Matrix usernames when they are detected as numeric.
-     *
-     * @var string
-     */
-    public const MATRIX_USER_PREFIX = 'user';
-
+abstract class matrix_user_manager_base {
     /**
      * Gets matrix user id from moodle.
      *
      * @param int $userid Moodle user id
      * @return string|null
      */
-    public static function get_matrixid_from_moodle(
+    abstract public static function get_matrixid_from_moodle(
         int $userid,
-    ): ?string {
-        self::load_requirements();
-        $field = profile_user_record($userid);
-        $matrixprofilefield = get_config('communication_matrix', 'matrixuserid_field');
-
-        if ($matrixprofilefield === false) {
-            return null;
-        }
-
-        return $field->{$matrixprofilefield} ?? null;
-    }
+    ): ?string;
 
     /**
      * Get a qualified matrix user id based on a Moodle username.
@@ -58,21 +40,9 @@ class matrix_user_manager {
      * @param string $username The moodle username to turn into a Matrix username
      * @return string
      */
-    public static function get_formatted_matrix_userid(
+    abstract public static function get_formatted_matrix_userid(
         string $username,
-    ): string {
-        $username = preg_replace('/[@#$%^&*()+{}|<>?!,]/i', '.', $username);
-        $username = ltrim(rtrim($username, '.'), '.');
-
-        // Matrix/Synapse servers will not allow numeric usernames.
-        if (is_numeric($username)) {
-            $username = self::MATRIX_USER_PREFIX . $username;
-        }
-
-        $homeserver = self::get_formatted_matrix_home_server();
-
-        return "@{$username}:{$homeserver}";
-    }
+    ): string;
 
     /**
      * Add user's Matrix user id.
@@ -100,31 +70,11 @@ class matrix_user_manager {
     }
 
     /**
-     * Sets home server for user matrix id
-     *
-     * @return string
-     */
-    public static function get_formatted_matrix_home_server(): string {
-        $homeserver = get_config('communication_matrix', 'matrixhomeserverurl');
-        if ($homeserver === false) {
-            throw new \moodle_exception('Unknown matrix homeserver url');
-        }
-
-        $homeserver = parse_url($homeserver)['host'];
-
-        if (str_starts_with($homeserver, 'www.')) {
-            $homeserver = str_replace('www.', '', $homeserver);
-        }
-
-        return $homeserver;
-    }
-
-    /**
      * Insert "Communication" category and "matrixuserid" field.
      *
      * @return string
      */
-    public static function create_matrix_user_profile_fields(): ?string {
+    protected static function create_matrix_user_profile_fields(): ?string {
         global $CFG, $DB;
 
         require_once($CFG->dirroot . '/user/profile/definelib.php');

@@ -15,16 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for communication_matrix.
+ * External functions and service declaration for Matrix
+ *
+ * Documentation: {@link https://moodledev.io/docs/apis/subsystems/external/description}
  *
  * @package    communication_matrix
- * @copyright  2023 Safat Shahin <safat.shahin@moodle.com>
+ * @category   webservice
+ * @copyright  2025 André Menrath <andre.menrath@uni-graz.at>, University of Graz
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'communication_matrix';
-$plugin->version = 2025012703;
-$plugin->requires = 2024041600;
-$plugin->maturity = MATURITY_ALPHA;
+$functions = [
+    'communication_matrix_set_usersync' => [
+        'classname' => communication_matrix\external\set_usersync::class,
+        'description' => 'Set Sub-Plugin for the Synchronization of the Matrix User ID',
+        'type' => 'write',
+        'ajax' => true,
+    ],
+];
+
+$services = [
+];

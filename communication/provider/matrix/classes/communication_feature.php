@@ -33,6 +33,7 @@ use communication_matrix\local\spec\features\synapse\{
     invite_member_to_room_v1 as invite_member_to_room_feature,
 };
 use core_communication\processor;
+use core_plugin_manager;
 use stdClass;
 use GuzzleHttp\Psr7\Response;
 
@@ -62,6 +63,9 @@ class communication_feature implements
     /** @var \communication_matrix\local\spec\v1p1|null The Matrix API processor */
     protected ?matrix_client $matrixapi;
 
+    /** @var string The full classname of the used matrix_user_manager */
+    protected ?string $matrixusermanager;
+
     /**
      * Load the communication provider for the communication api.
      *
@@ -71,7 +75,6 @@ class communication_feature implements
     public static function load_for_instance(processor $communication): self {
         return new self($communication);
     }
-
     /**
      * Reload the room information.
      * This may be necessary after a room has been created or updated via the adhoc task.
@@ -103,6 +106,20 @@ class communication_feature implements
                 accesstoken: get_config('communication_matrix', 'matrixaccesstoken'),
             );
         }
+        $this->matrixusermanager = self::get_matrix_user_manager();
+    }
+
+    /**
+     * Get the selected Matrix user manager.
+     *
+     * @return void
+     */
+    private function get_matrix_user_manager(): string {
+        foreach (core_plugin_manager::instance()->get_plugins_of_type('matrixusersync') as $plugin) {
+            /** @var \communication_matrix\plugininfo\matrixusersync $plugin */
+            $plugin->get_classname_of_matrix_user_manager();
+        }
+        return '\\matrixusersync_username\\matrix_user_manager';
     }
 
     /**
@@ -160,7 +177,7 @@ class communication_feature implements
 
             // Proceed if we have a user's full name and email to work with.
             if (!empty($user->email) && !empty($userfullname)) {
-                $qualifiedmuid = matrix_user_manager::get_formatted_matrix_userid($user->username);
+                $qualifiedmuid = $this->matrixusermanager::get_formatted_matrix_userid($user->username);
 
                 // First create user in matrix.
                 $response = $this->matrixapi->create_user(
@@ -176,7 +193,7 @@ class communication_feature implements
 
                 if (!empty($matrixuserid = $body->name)) {
                     // Then create matrix user id in moodle.
-                    matrix_user_manager::set_matrix_userid_in_moodle($userid, $qualifiedmuid);
+                    $this->matrixusermanager::set_matrix_userid_in_moodle($userid, $qualifiedmuid);
                     if ($this->add_registered_matrix_user_to_room($matrixuserid)) {
                         $addedmembers[] = $userid;
                     }
@@ -209,7 +226,7 @@ class communication_feature implements
 
         if (isset($body->joined)) {
             foreach ($userids as $key => $userid) {
-                $matrixuserid = matrix_user_manager::get_matrixid_from_moodle(
+                $matrixuserid = $this->matrixusermanager::get_matrixid_from_moodle(
                     userid: $userid,
                 );
                 if (!array_key_exists($matrixuserid, (array) $body->joined)) {
@@ -233,7 +250,7 @@ class communication_feature implements
         $addedmembers = [];
 
         foreach ($userids as $userid) {
-            $matrixuserid = matrix_user_manager::get_matrixid_from_moodle($userid);
+            $matrixuserid = $this->matrixusermanager::get_matrixid_from_moodle($userid);
 
             if ($matrixuserid && $this->check_user_exists($matrixuserid)) {
                 if ($this->add_registered_matrix_user_to_room($matrixuserid)) {
@@ -293,7 +310,7 @@ class communication_feature implements
      * @param array $userids The Moodle user ids to remove
      */
     public function remove_members_from_room(array $userids): void {
-        // This API requiures the remove_members_from_room feature.
+        // This API requires the remove_members_from_room feature.
         $this->matrixapi->require_feature(remove_member_from_room_feature::class);
 
         if ($this->get_room_id() === null) {
@@ -310,7 +327,7 @@ class communication_feature implements
 
         foreach ($userids as $userid) {
             // Check user is member of room first.
-            $matrixuserid = matrix_user_manager::get_matrixid_from_moodle($userid);
+            $matrixuserid = $this->matrixusermanager::get_matrixid_from_moodle($userid);
 
             if (!$matrixuserid) {
                 // Unable to find a matrix userid for this user.
@@ -645,7 +662,7 @@ class communication_feature implements
         // Translate the user ids to matrix user ids.
         $userlist = array_combine(
             array_map(
-                fn ($userid) => matrix_user_manager::get_matrixid_from_moodle($userid),
+                fn ($userid) => $this->matrixusermanager::get_matrixid_from_moodle($userid),
                 $userlist,
             ),
             $userlist,
@@ -669,7 +686,7 @@ class communication_feature implements
         if (!empty($forceremoval)) {
             // Remove the users from the power levels if they are not admins.
             foreach ($forceremoval as $userid) {
-                $muid = matrix_user_manager::get_matrixid_from_moodle($userid);
+                $muid = $this->matrixusermanager::get_matrixid_from_moodle($userid);
                 if (isset($newuserpowerlevels[$muid]) && $newuserpowerlevels[$muid] < matrix_constants::POWER_LEVEL_MAXIMUM) {
                     unset($newuserpowerlevels[$muid]);
                 }
@@ -823,6 +840,8 @@ class communication_feature implements
         ) {
             return true;
         }
+
+        // TODO: Check if selected subplugin for matrixusersync is configured too.
         return false;
     }
 

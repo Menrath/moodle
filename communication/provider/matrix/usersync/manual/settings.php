@@ -15,16 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for communication_matrix.
+ * Example settings page for Manual Matrix User ID sync.
  *
- * @package    communication_matrix
- * @copyright  2023 Safat Shahin <safat.shahin@moodle.com>
+ * @package    matrixusersync_manual
+ * @copyright  2025 André Menrath <andre.menrath@uni-graz.at>, University of Graz
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$plugin->component = 'communication_matrix';
-$plugin->version = 2025012703;
-$plugin->requires = 2024041600;
-$plugin->maturity = MATURITY_ALPHA;
+if ($hassiteconfig) {
+    $settings = new admin_settingpage('matrixusersync_manual_settings', new lang_string('pluginname', 'matrixusersync_manual'));
+
+    if ($ADMIN->fulltree) {
+        $name = 'matrixusersync_manual/matrixmainsettings';
+        $title = get_string('settingsheading', 'matrixusersync_manual', null, true);
+        $settings->add(new admin_setting_heading($name, $title, null));
+    }
+}

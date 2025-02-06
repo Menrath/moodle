@@ -175,7 +175,12 @@ class communication_feature implements
         ), 'addcommunicationoptionshere');
     }
 
+    /**
+     * Return whether the Communication Provider is configured.
+     * @return bool
+     */
     public static function is_configured(): bool {
+
         return true;
     }
 }
